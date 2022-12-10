@@ -24,3 +24,7 @@ To set this up on your machine, make sure that you have [NodeJS](https://nodejs.
   # Run the application in development
   foo@bar:~$ npm run dev
 ```
+
+### :snail: Available Endpoints
+
+1. Resize Image: `bash "/api/image?filename=fjord&width=100&height=100"`
