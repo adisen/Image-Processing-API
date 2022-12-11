@@ -8,20 +8,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-function resizeImage(file, width, height) {
+const sharp_1 = __importDefault(require("sharp"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+function resizeImage(file, width, height, filename) {
     return __awaiter(this, void 0, void 0, function* () {
-        // try {
-        //   await sharp(file)
-        //     .resize({
-        //       width,
-        //       height
-        //     })
-        //     .toFormat("png", { mozjpeg: true })
-        //     .toFile("sammy-resized-compressed.jpeg");
-        // } catch (error) {
-        //   console.log(error);
-        // }
+        // Check if a file has been resized already
+        const fileName = path_1.default.join(__dirname, "..", "..", "thumb", `${filename}-${width}-${height}.png`);
+        if (fs_1.default.existsSync(fileName)) {
+            return fileName;
+        }
+        // Else resize
+        yield (0, sharp_1.default)(file)
+            .resize({
+            width: Number(width),
+            height: Number(height),
+        })
+            .toFormat("png", { mozjpeg: true })
+            .toFile(path_1.default.join(__dirname, "..", "..", "thumb", `${filename}-${width}-${height}.png`));
+        return fileName;
     });
 }
 exports.default = resizeImage;

@@ -12,30 +12,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.testFunction = void 0;
 const express_1 = __importDefault(require("express"));
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
-const sharp_1 = __importDefault(require("sharp"));
+const resizeImage_1 = __importDefault(require("../utils/resizeImage"));
 const router = express_1.default.Router();
-const testFunction = () => {
-    return "test";
-};
-exports.testFunction = testFunction;
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get query params
     const { filename, width, height } = req.query;
+    if (filename === undefined) {
+        res.status(400).send("A filename is required");
+        return;
+    }
+    if (width === undefined || isNaN(Number(width)) || +width <= 0) {
+        res.status(400).send("Width needs to be a number greater than 0");
+        return;
+    }
+    if (height === undefined || isNaN(Number(height)) || +height <= 0) {
+        res.status(400).send("Height needs to be a number greater than 0");
+        return;
+    }
     try {
         // Get image from full folder
         const imagePath = path_1.default.join(__dirname, "..", "..", "full", `${filename}.jpg`);
         const image = yield promises_1.default.readFile(imagePath);
-        const metadata = yield (0, sharp_1.default)(image).metadata();
-        // console.log(metadata);
-        // Use sharp to resiz
-        res.send("Done");
+        // const metadata = await sharp(image).metadata();
+        // Use sharp to resize
+        const result = yield (0, resizeImage_1.default)(image, width, height, filename);
+        res.sendFile(result);
     }
     catch (error) {
-        console.log("file does not exist");
         res.status(404).send("File Not found");
     }
 }));

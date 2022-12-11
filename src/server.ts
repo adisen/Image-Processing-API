@@ -1,15 +1,19 @@
-import express from "express";
-import image from "./routes/image";
+import express, { Request, Response } from 'express'
+import image from './routes/image'
 
-const app = express();
+const app = express()
 
-const port = 3000;
+const port = 3000
 
 // Define routes
-app.use("/api/image", image);
+app.use('/api/image', image)
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
-});
+app.get('/', (req: Request, res: Response): void => {
+    res.send('Server working as expected')
+})
 
-export default app;
+app.listen(port, (): void => {
+    console.log(`App listening on port ${port}`)
+})
+
+export default app

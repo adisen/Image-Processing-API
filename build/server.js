@@ -9,6 +9,9 @@ const app = (0, express_1.default)();
 const port = 3000;
 // Define routes
 app.use("/api/image", image_1.default);
+app.get("/", (req, res) => {
+    res.send("Server working as expected");
+});
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });
